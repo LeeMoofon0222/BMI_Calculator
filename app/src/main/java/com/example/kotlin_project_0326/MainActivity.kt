@@ -14,15 +14,26 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val button = findViewById<Button>(R.id.button)
+        val infoButton = findViewById<Button>(R.id.button3)
+        infoButton.visibility = View.INVISIBLE;
+
         button.setOnClickListener {
             val intent = Intent(this, MainActivity2::class.java)
             startActivityForResult(intent, 0)
         }
+
+        infoButton.setOnClickListener {
+            val intent = Intent(this, MainActivity6::class.java)
+            startActivityForResult(intent, 0)
+        }
     }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(resultCode == RESULT_OK) { // Check for RESULT_OK
+            val infoButton = findViewById<Button>(R.id.button3)
+            infoButton.visibility = View.VISIBLE;
             val name = data?.getBundleExtra("key")?.getString("Name")
             val height = data?.getBundleExtra("key")?.getString("Height")?.toDoubleOrNull()
             val weight = data?.getBundleExtra("key")?.getString("Weight")?.toDoubleOrNull()
@@ -55,4 +66,21 @@ class MainActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.textView6).text = "Status: $status"
         }
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("NameText", findViewById<TextView>(R.id.textView7).text.toString())
+        outState.putString("GenderText", findViewById<TextView>(R.id.textView4).text.toString())
+        outState.putString("BMIText", findViewById<TextView>(R.id.textView5).text.toString())
+        outState.putString("StatusText", findViewById<TextView>(R.id.textView6).text.toString())
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        findViewById<TextView>(R.id.textView7).text = savedInstanceState.getString("NameText")
+        findViewById<TextView>(R.id.textView4).text = savedInstanceState.getString("GenderText")
+        findViewById<TextView>(R.id.textView5).text = savedInstanceState.getString("BMIText")
+        findViewById<TextView>(R.id.textView6).text = savedInstanceState.getString("StatusText")
+    }
+
 }
